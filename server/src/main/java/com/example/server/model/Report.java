@@ -1,14 +1,33 @@
 package com.example.server.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+
+import java.time.LocalDateTime;
 
 @Document(collection = "reports")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Report {
     @Id
     private String id;
 
+
     private String report;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     /**
      * Getters Id
@@ -17,6 +36,8 @@ public class Report {
     public String getId() {
         return id;
     }
+
+
 
     /**
      * Setter
@@ -41,4 +62,13 @@ public class Report {
     public void setReport(String report) {
         this.report = report;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
 }

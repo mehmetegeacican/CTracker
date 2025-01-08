@@ -20,6 +20,7 @@ public class ReportDtoConverter {
         return ReportDto.builder()
                 .id(idParam)
                 .report(reportParam.getReport())
+                .createdAt(reportParam.getCreatedAt())
                 .build();
     }
 

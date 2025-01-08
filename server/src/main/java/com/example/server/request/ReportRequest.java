@@ -1,18 +1,15 @@
-package com.example.server.dto;
+package com.example.server.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Builder
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportDto {
-    private String id;
+@Data
+public class ReportRequest {
     private String report;
-    private LocalDateTime createdAt;
 }
