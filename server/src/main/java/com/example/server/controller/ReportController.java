@@ -30,28 +30,43 @@ public class ReportController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ReportDto>> getAllReports(){
-        List<Report> reports = reportService.getAllReports();
-        return new ResponseEntity<List<ReportDto>>(
-                reportDtoConverter.convertToDto(reports), HttpStatus.OK
-        );
+    public ResponseEntity<?> getAllReports(){
+        try{
+            List<Report> reports = reportService.getAllReports();
+            return new ResponseEntity<List<ReportDto>>(
+                    reportDtoConverter.convertToDto(reports), HttpStatus.OK
+            );
+
+        } catch (Exception error){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error fetching reports: " + error.getMessage());
+
+            // Return the error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
     }
 
 
     @PostMapping
     public ResponseEntity<Map<String,Object>> postNewReport(@RequestBody ReportRequest reportRequest){
         Map<String, Object> responseBody = new HashMap<>();
-        Report reportEntity = reportRequestConverter.convertToEntity(reportRequest);
-        // Step 1 -- Report Checks
-        if(reportEntity.getReport() == null || reportEntity.getReport().isEmpty()){
-            responseBody.put("message", "Report section can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        try{
+            Report reportEntity = reportRequestConverter.convertToEntity(reportRequest);
+            // Step 1 -- Report Checks
+            if(reportEntity.getReport() == null || reportEntity.getReport().isEmpty()){
+                responseBody.put("message", "Report section can not be empty");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            }
+            // Step 2 -- Create the Report
+            Report createdReport = reportService.createReport(reportEntity);
+            responseBody.put("message", "Report Inserted Successfully");
+            responseBody.put("report", createdReport);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+        } catch (Exception error){
+            responseBody.put("message", "Error deleting report " + error);
+            return ResponseEntity.status(500).body(responseBody);
         }
-        // Step 2 -- Create the Report
-        Report createdReport = reportService.createReport(reportEntity);
-        responseBody.put("message", "Report Inserted Successfully");
-        responseBody.put("report", createdReport);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
     @DeleteMapping("/{reportId}")
