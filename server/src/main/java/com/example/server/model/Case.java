@@ -1,12 +1,15 @@
 package com.example.server.model;
 
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-@Document(collation = "cases")
+@Document(collection = "cases")
 public class Case {
     @Id
     private String id;
@@ -17,6 +20,12 @@ public class Case {
     private int newCaseNumber;
     private int dischargedCaseNumber;
     private int deathCaseNumber;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     /**
      * Get
