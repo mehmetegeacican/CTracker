@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flex, Layout, Menu } from 'antd';
+import { Link } from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 
@@ -14,8 +15,8 @@ export default function AppLayout({ children }) {
                 <Flex align='center' justify='space-evenly' gap={30} style={{
                     marginRight:'2em'
                 }}>
-                    <a>Statistics</a>
-                    <a>Reports</a>
+                    <Link to="/statistics">Statistics</Link>
+                    <Link to="/reports">Reports</Link>
                 </Flex>
             </Header>
             {/* Content */}
