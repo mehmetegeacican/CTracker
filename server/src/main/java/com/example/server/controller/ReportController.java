@@ -2,14 +2,18 @@ package com.example.server.controller;
 
 import com.example.server.dto.ReportDto;
 import com.example.server.dto.converter.ReportDtoConverter;
+import com.example.server.helpers.ReportHelper;
 import com.example.server.model.Report;
 import com.example.server.request.ReportRequest;
 import com.example.server.request.converter.ReportRequestConverter;
+import com.example.server.service.CaseService;
 import com.example.server.service.ReportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +23,14 @@ import java.util.Map;
 public class ReportController {
 
     private final ReportService reportService;
+    private final CaseService caseService;
     private final ReportDtoConverter reportDtoConverter;
 
     private final ReportRequestConverter reportRequestConverter;
 
-    public ReportController(ReportService reportService,ReportDtoConverter reportDtoConverter, ReportRequestConverter reportRequestConverter){
+    public ReportController(ReportService reportService, CaseService caseService, ReportDtoConverter reportDtoConverter, ReportRequestConverter reportRequestConverter){
         this.reportService = reportService;
+        this.caseService = caseService;
         this.reportDtoConverter = reportDtoConverter;
         this.reportRequestConverter = reportRequestConverter;
     }
@@ -58,7 +64,23 @@ public class ReportController {
                 responseBody.put("message", "Report section can not be empty");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
             }
-            // Step 2 -- Create the Report
+            // Step 2 -- Validate Report contains the right keywords
+            String reportText = reportEntity.getReport();
+            if(ReportHelper.isValidReport(reportText) == false){
+                responseBody.put("message", "Report content is invalid. Must include City, Date, Death, Discharged and New Case information.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            }
+            // Step 3 -- Extract the Datas and Add them to Cases
+            String dateStr = ReportHelper.extractDate(reportText);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            Date date = sdf.parse(dateStr);
+            String city = ReportHelper.extractCity(reportText);
+            // String Report with Retracted Date
+            String retractedReport = ReportHelper.removeDateFromReport(reportText);
+            Map<String,Integer> numberMap = ReportHelper.extractNumbers(retractedReport);
+            // Step 4 -- Add the Case
+            caseService.addCase(city,date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
+            // Step 5 -- Create the Report
             Report createdReport = reportService.createReport(reportEntity);
             responseBody.put("message", "Report Inserted Successfully");
             responseBody.put("report", createdReport);

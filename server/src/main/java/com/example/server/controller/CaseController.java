@@ -5,6 +5,7 @@ import com.example.server.dto.ReportDto;
 import com.example.server.dto.converter.CaseDtoConverter;
 import com.example.server.model.Case;
 import com.example.server.service.CaseService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +33,17 @@ public class CaseController {
     @GetMapping("/all")
     public ResponseEntity<?> getCases(
             @RequestParam(required = false) String reportLocation,
-            @RequestParam(required = false) Date startDate,
-            @RequestParam(required = false) Date endDate) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate) {
         Map<String, String> responseBody = new HashMap<>();
         try{
+
+            if((startDate != null && endDate == null) || (startDate == null && endDate != null)){
+                responseBody.put("message", "Both of the startDate and endDates must be given");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            }
             List<Case> allCases = caseService.getCases(reportLocation,startDate,endDate);
+
             return new ResponseEntity<List<CaseDto>>(
                     caseDtoConverter.convertToDto(allCases), HttpStatus.OK
             );
