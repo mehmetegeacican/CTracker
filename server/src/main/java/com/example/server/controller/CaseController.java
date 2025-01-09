@@ -53,4 +53,28 @@ public class CaseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
     }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getStatistics(
+            @RequestParam(required = false) String reportLocation,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate)
+    {
+        Map<String, String> responseBody = new HashMap<>();
+        try{
+            // Step 1 -- Check the Date Parameters
+            if((startDate != null && endDate == null) || (startDate == null && endDate != null)){
+                responseBody.put("message", "Both of the startDate and endDates must be given");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            }
+            List<Map> stats = caseService.getStatistics(reportLocation,startDate,endDate);
+            return new ResponseEntity<>(
+                    stats, HttpStatus.OK
+            );
+        }catch (Exception error){
+            responseBody.put("message", "Error fetching cases: " + error.getMessage());
+            // Return the error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+    }
 }

@@ -5,13 +5,14 @@ import com.example.server.model.Case;
 import com.example.server.repository.CaseRepository;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CaseService {
@@ -35,7 +36,7 @@ public class CaseService {
         Query query = new Query();
         // Step 1 -- Add the Queries if they are present
         if (isLocationParameterValid(locationName)) {
-            query.addCriteria(Criteria.where("reportLocation").is(locationName));
+            query.addCriteria(Criteria.where("reportLocation").is(locationName.toLowerCase()));
         }
         if (areDateParametersValid(startDate, endDate)) {
             query.addCriteria(Criteria.where("reportDate").gte(startDate).lte(endDate));
@@ -61,5 +62,36 @@ public class CaseService {
         newCaseEntity.setDischargedCaseNumber(dischargedCase);
 
         mongoTemplate.save(newCaseEntity);
+    }
+
+    public List<Map> getStatistics (String reportLocation, Date startDate, Date endDate){
+        Criteria matchCriteria = new Criteria();
+        if (isLocationParameterValid(reportLocation)) {
+            matchCriteria.and("reportLocation").is(reportLocation.toLowerCase());
+        }
+        if (areDateParametersValid(startDate, endDate)) {
+            matchCriteria.and("reportDate").gte(startDate).lte(endDate);
+        }
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(matchCriteria),
+                Aggregation.group()
+                        .sum("newCaseNumber").as("totalNewCases")
+                        .sum("dischargedCaseNumber").as("totalDischargedCases")
+                        .sum("deathCaseNumber").as("totalDeathCases"),
+                Aggregation.project("totalNewCases", "totalDischargedCases", "totalDeathCases")
+        );
+
+        AggregationResults<Map> results = mongoTemplate.aggregate(aggregation, "cases", Map.class);
+
+        if (results.getMappedResults().isEmpty()) {
+            Map<String, Object> defaultResult = new HashMap<>();
+            defaultResult.put("totalNewCases", 0);
+            defaultResult.put("totalDischargedCases", 0);
+            defaultResult.put("totalDeathCases", 0);
+            return Collections.singletonList(defaultResult);
+        }
+
+        return results.getMappedResults();
+
     }
 }
