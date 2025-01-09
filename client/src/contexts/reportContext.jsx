@@ -41,7 +41,7 @@ export const ReportProvider = ({ children }) => {
                         key: item.id,
                         ...item
                     }
-                }) 
+                }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 dispatch({
                     type: 'SET_REPORTS',
                     payload: response,
