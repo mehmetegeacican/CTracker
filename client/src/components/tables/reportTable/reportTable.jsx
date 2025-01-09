@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, message, Table } from 'antd';
 import { deleteExistingReport, fetchAllReports } from '../../../api/reportApi';
+import { useReportsContext } from '../../../contexts/reportContext';
 
 
 
@@ -47,26 +48,17 @@ export default function ReportTable() {
         },
 
     ];
-    const [reports, setReports] = useState(false);
+    const { state: { reports }, dispatch } = useReportsContext();
+
+
 
     const handleDelete = async (id) => {
-        console.log("Deleting " ,id);
         await deleteExistingReport(id);
-        await fetchReports();
-        message.info("Report have been deleted successfully");
+        dispatch({type:'TRIGGER'})
     }
-    const fetchReports = useCallback(async () => {
-        const result = await fetchAllReports();
-        let updatedRes = result.map((res) => {
-            return { key: res.id, ...res };
-        });
-        setReports(updatedRes);
-    }, []);
 
-    useEffect(() => {
-        fetchReports();
-    }, []);
+
     return (
-        <Table columns={COLUMNS} dataSource={reports} />
+        <Table columns={COLUMNS} dataSource={reports}/>
     )
 }
