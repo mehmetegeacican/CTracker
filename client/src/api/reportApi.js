@@ -12,7 +12,24 @@ export const fetchAllReports = async () => {
         console.error(e);
         return [];
     }
-}
+};
+
+/**
+ * Create New Report
+ * @param {*Object} requestObj 
+ * @returns 
+ */
+export const createNewReport = async (requestObj) => {
+    try{
+        const res = await axios.post("http://localhost:8080/api/v1/reports",requestObj);
+        return res.data;
+    } catch(e){
+        console.error(e);
+        return {
+            message:"Could not create the report " + e.message
+        };
+    }
+};
 
 /**
  * Delete Reports
