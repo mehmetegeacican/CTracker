@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/reports")
 public class ReportController {
