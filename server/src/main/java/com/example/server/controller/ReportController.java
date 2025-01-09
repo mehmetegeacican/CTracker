@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/reports")
@@ -73,6 +70,7 @@ public class ReportController {
             // Step 3 -- Extract the Datas and Add them to Cases
             String dateStr = ReportHelper.extractDate(reportText);
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC-3"));
             Date date = sdf.parse(dateStr);
             String city = ReportHelper.extractCity(reportText);
             // String Report with Retracted Date
