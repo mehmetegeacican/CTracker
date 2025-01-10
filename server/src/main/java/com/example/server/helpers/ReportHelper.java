@@ -76,7 +76,7 @@ public class ReportHelper {
         return resultMap;
     }
 
-    private static int extractNumberFromSentence(String sentence,String date) {
+    public static int extractNumberFromSentence(String sentence,String date) {
         // Pattern to match all numbers
         Pattern pattern = Pattern.compile("(\\d+)");
         Matcher matcher = pattern.matcher(sentence);
