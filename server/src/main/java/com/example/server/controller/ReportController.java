@@ -80,7 +80,7 @@ public class ReportController {
             // Step 4 -- Create the Report
             Report createdReport = reportService.createReport(reportEntity);
             // Step 5 -- Add the Case
-            caseService.addCase(city,createdReport.getReport(),date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
+            caseService.addCase(city,createdReport.getId(),date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
 
             responseBody.put("message", "Report Inserted Successfully");
             responseBody.put("report", createdReport);
