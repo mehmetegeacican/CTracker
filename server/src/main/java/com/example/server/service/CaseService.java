@@ -4,6 +4,7 @@ import com.example.server.dto.CaseDto;
 import com.example.server.model.Case;
 import com.example.server.repository.CaseRepository;
 
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -66,6 +67,13 @@ public class CaseService {
     }
 
 
+    public void deleteCase(String reportId){
+        Query query = new Query(Criteria.where("reportId").is(reportId));
+        DeleteResult result = mongoTemplate.remove(query, Case.class);
+        if (result.getDeletedCount() == 0) {
+            System.out.println("Report not found");
+        }
+    }
 
 
     /*

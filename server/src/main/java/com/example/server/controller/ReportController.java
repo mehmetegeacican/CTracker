@@ -125,6 +125,8 @@ public class ReportController {
                 return ResponseEntity.status(400).body(responseBody);
             }
             reportService.deleteReport(reportId);
+            // Delete the Case of the Report
+            caseService.deleteCase(reportId);
             responseBody.put("message", "Report deleted successfully");
             return ResponseEntity.status(200).body(responseBody);
 
