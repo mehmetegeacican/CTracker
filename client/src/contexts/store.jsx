@@ -6,12 +6,14 @@ import { fetchAllCases } from '../api/casesApi';
 const initialState = {
     reports: [],
     cases: [],
-    trigger: 0
+    trigger: 0,
+    selectedCity:null
 };
 
 const SET_REPORTS = 'SET_REPORTS';
 const TRIGGER = 'TRIGGER'
 const SET_CASES = "SET_CASES";
+const SET_CITY = "SET_CITY";
 
 const reportsReducer = (state, action) => {
     switch (action.type) {
@@ -30,6 +32,11 @@ const reportsReducer = (state, action) => {
                 ...state,
                 trigger: state.trigger + 1,
             };
+        case SET_CITY:
+            return {
+                ...state,
+                selectedCity:action.payload
+            }
         default:
             return state;
     }
@@ -60,7 +67,11 @@ export const ReportProvider = ({ children }) => {
         };
         const fetchCases = async () => {
             try {
-                let response = await fetchAllCases({});
+                let query = {};
+                if(state.selectedCity && state.selectedCity !== "all"){
+                    query.reportLocation = state.selectedCity
+                }
+                let response = await fetchAllCases(query);
                 response = response.map((item) => {
                     return {
                         key: item.id,

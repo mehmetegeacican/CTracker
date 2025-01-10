@@ -2,6 +2,7 @@ import { Flex, Select, Tabs, DatePicker, Button, Divider } from 'antd'
 import React, { useState } from 'react'
 import CaseTable from '../../components/tables/caseTable';
 import { CITIES  as cities} from '../../assets/cities';
+import { useReportsContext } from '../../contexts/store';
 
 export default function StatisticsPage() {
   const tabItems = [
@@ -20,6 +21,7 @@ export default function StatisticsPage() {
 
   const [selectedCity, setSelectedCity] = useState("all");
   const [dateRange, setDateRange] = useState([]);
+  const {dispatch} = useReportsContext();
 
   const handleCityChange = (value) => {
     setSelectedCity(value);
@@ -27,6 +29,11 @@ export default function StatisticsPage() {
 
   const handleDateChange = (dates, dateStrings) => {
     setDateRange(dateStrings); // Array of formatted date strings [start, end]
+  };
+
+  const handleFilter = () => {
+      dispatch({type:'SET_CITY', payload: selectedCity});
+      dispatch({type:'TRIGGER'});
   };
 
 
@@ -56,7 +63,7 @@ export default function StatisticsPage() {
                 onChange={handleDateChange}
                 style={{ width: '30%' }}
             />
-          <Button type="primary"> Go </Button>
+          <Button type="primary" onClick={handleFilter}> Go </Button>
         </Flex>
       </Flex>
       <Flex vertical gap={20}>

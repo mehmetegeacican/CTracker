@@ -8,9 +8,7 @@ import axios from "axios";
 export const fetchAllCases = async (query) => {
     try{
         const res = await axios.get("http://localhost:8080/api/v1/cases/all",{
-            params : {
-                query : query
-            }
+            params : query
         });
         return res.data;
     } catch(e){
