@@ -22,7 +22,7 @@ const casereducer = (state, action) => {
         case TRIGGER_CASE:
             return {
                 ...state,
-                triggerCase: state.trigger + 1,
+                triggerCase: state.triggerCase + 1,
             };
         default:
             return state;
@@ -32,7 +32,7 @@ const casereducer = (state, action) => {
 const CaseContext = createContext();
 
 export const CaseProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(casereducer, initialState);
+    const [state, caseDispatch] = useReducer(casereducer, initialState);
 
     useEffect(() => {
         const fetchCases = async () => {
@@ -44,7 +44,8 @@ export const CaseProvider = ({ children }) => {
                         ...item
                     }
                 }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                dispatch({
+                console.log(response,"****")
+                caseDispatch({
                     type: 'SET_CASES',
                     payload: response,
                 });
@@ -56,7 +57,7 @@ export const CaseProvider = ({ children }) => {
     }, [state.triggerCase]);
 
     return (
-        <CaseContext.Provider value={{ state, dispatch }}>
+        <CaseContext.Provider value={{ state, caseDispatch }}>
             {children}
         </CaseContext.Provider>
     );

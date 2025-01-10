@@ -77,10 +77,11 @@ public class ReportController {
             // String Report with Retracted Date
             String retractedReport = ReportHelper.removeDateFromReport(reportText);
             Map<String,Integer> numberMap = ReportHelper.extractNumbers(retractedReport);
-            // Step 4 -- Add the Case
-            caseService.addCase(city,date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
-            // Step 5 -- Create the Report
+            // Step 4 -- Create the Report
             Report createdReport = reportService.createReport(reportEntity);
+            // Step 5 -- Add the Case
+            caseService.addCase(city,createdReport.getId(),date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
+
             responseBody.put("message", "Report Inserted Successfully");
             responseBody.put("report", createdReport);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);

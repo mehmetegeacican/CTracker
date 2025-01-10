@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useCasesContext } from '../../../contexts/caseContext';
 
 export default function CaseTable() {
@@ -67,6 +67,7 @@ export default function CaseTable() {
     ];
 
     const { state: { cases }, dispatch } = useCasesContext();
+
     return (
         <Table
             columns={COLUMNS}

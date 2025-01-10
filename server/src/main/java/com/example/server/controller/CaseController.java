@@ -52,6 +52,7 @@ public class CaseController {
         }
     }
 
+    /*
     @GetMapping("/statistics")
     public ResponseEntity<?> getStatistics(
             @RequestParam(required = false) String reportLocation,
@@ -75,4 +76,5 @@ public class CaseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
     }
+     */
 }
