@@ -60,7 +60,7 @@ export const ReportProvider = ({ children }) => {
         };
         const fetchCases = async () => {
             try {
-                let response = await fetchAllCases();
+                let response = await fetchAllCases({});
                 response = response.map((item) => {
                     return {
                         key: item.id,
