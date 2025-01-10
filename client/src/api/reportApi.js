@@ -1,12 +1,27 @@
 import axios from 'axios';
-
+const reportUrl = import.meta.env.VITE_API_REPORT_URL;
 /**
  * Fetches All the Reports
  * @returns 
  */
 export const fetchAllReports = async () => {
     try{
-        const res = await axios.get("http://localhost:8080/api/v1/reports/all");
+        const res = await axios.get(`${reportUrl}/all`);
+        return res.data;
+    } catch(e){
+        console.error(e);
+        return [];
+    }
+};
+
+/**
+ * Fetch By Id
+ * @param {*string} reportId 
+ * @returns 
+ */
+export const fetchReportById = async (reportId) => {
+    try{
+        const res = await axios.get(`${reportUrl}/${reportId}`);
         return res.data;
     } catch(e){
         console.error(e);
@@ -21,7 +36,7 @@ export const fetchAllReports = async () => {
  */
 export const createNewReport = async (requestObj) => {
     try{
-        const res = await axios.post("http://localhost:8080/api/v1/reports",requestObj);
+        const res = await axios.post(`${reportUrl}`,requestObj);
         return res.data;
     } catch(e){
         console.error(e);
@@ -38,7 +53,7 @@ export const createNewReport = async (requestObj) => {
  */
 export const deleteExistingReport = async (reportId) => {
     try{
-        const res = await axios.delete(`http://localhost:8080/api/v1/reports/${reportId}`)
+        const res = await axios.delete(`${reportUrl}/${reportId}`)
         return res.data;
     } catch(e){
         console.error(e);

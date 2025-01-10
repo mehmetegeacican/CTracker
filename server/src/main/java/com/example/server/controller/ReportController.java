@@ -52,6 +52,31 @@ public class ReportController {
     }
 
 
+    @GetMapping("/{reportId}")
+    public ResponseEntity<?> getSpecificReport(@PathVariable String reportId){
+        try{
+            Optional<Report> reportOptional = reportService.getReportById(reportId);
+            // Check if the report is present
+            if (reportOptional.isPresent()) {
+                // Convert Report to ReportDto
+                ReportDto reportDto = reportDtoConverter.convertToDto(reportOptional.get());
+                return ResponseEntity.ok(reportDto);  // Return ReportDto
+            } else {
+                // If the report is not found, return error message
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "Report not found with ID: " + reportId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception error){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error fetching reports: " + error.getMessage());
+
+            // Return the error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+
     @PostMapping
     public ResponseEntity<Map<String,Object>> postNewReport(@RequestBody ReportRequest reportRequest){
         Map<String, Object> responseBody = new HashMap<>();
@@ -80,7 +105,7 @@ public class ReportController {
             // Step 4 -- Create the Report
             Report createdReport = reportService.createReport(reportEntity);
             // Step 5 -- Add the Case
-            caseService.addCase(city,createdReport.getReport(),date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
+            caseService.addCase(city,createdReport.getId(),date,numberMap.get("newCases"),numberMap.get("deathCases"), numberMap.get("dischargedCases"));
 
             responseBody.put("message", "Report Inserted Successfully");
             responseBody.put("report", createdReport);
@@ -100,6 +125,8 @@ public class ReportController {
                 return ResponseEntity.status(400).body(responseBody);
             }
             reportService.deleteReport(reportId);
+            // Delete the Case of the Report
+            caseService.deleteCase(reportId);
             responseBody.put("message", "Report deleted successfully");
             return ResponseEntity.status(200).body(responseBody);
 

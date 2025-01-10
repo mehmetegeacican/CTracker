@@ -4,6 +4,7 @@ import com.example.server.dto.CaseDto;
 import com.example.server.model.Case;
 import com.example.server.repository.CaseRepository;
 
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -53,10 +54,10 @@ public class CaseService {
         return (startDate != null && endDate != null);
     }
 
-    public void addCase(String locationName,String report,Date date,int newCase,int deathCase,int dischargedCase){
+    public void addCase(String locationName,String reportId,Date date,int newCase,int deathCase,int dischargedCase){
         Case newCaseEntity = new Case();
         newCaseEntity.setReportLocation(locationName);
-        newCaseEntity.setMainReport(report);
+        newCaseEntity.setReportId(reportId);
         newCaseEntity.setReportDate(date);
         newCaseEntity.setNewCaseNumber(newCase);
         newCaseEntity.setDeathCaseNumber(deathCase);
@@ -65,6 +66,17 @@ public class CaseService {
         mongoTemplate.save(newCaseEntity);
     }
 
+
+    public void deleteCase(String reportId){
+        Query query = new Query(Criteria.where("reportId").is(reportId));
+        DeleteResult result = mongoTemplate.remove(query, Case.class);
+        if (result.getDeletedCount() == 0) {
+            System.out.println("Report not found");
+        }
+    }
+
+
+    /*
     public List<Map> getStatistics (String reportLocation, Date startDate, Date endDate){
         Criteria matchCriteria = new Criteria();
         if (isLocationParameterValid(reportLocation)) {
@@ -95,4 +107,5 @@ public class CaseService {
         return results.getMappedResults();
 
     }
+     */
 }

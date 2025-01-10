@@ -1,5 +1,5 @@
 import axios from "axios";
-
+const caseUrl = import.meta.env.VITE_API_CASE_URL;
 /**
  * This function returns cases
  * @param {*} query 
@@ -7,7 +7,7 @@ import axios from "axios";
  */
 export const fetchAllCases = async (query) => {
     try{
-        const res = await axios.get("http://localhost:8080/api/v1/cases/all",{
+        const res = await axios.get(`${caseUrl}/all`,{
             params : query
         });
         return res.data;
