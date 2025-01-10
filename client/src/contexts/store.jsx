@@ -7,13 +7,15 @@ const initialState = {
     reports: [],
     cases: [],
     trigger: 0,
-    selectedCity:null
+    selectedCity:null,
+    dateRange: []
 };
 
 const SET_REPORTS = 'SET_REPORTS';
 const TRIGGER = 'TRIGGER'
 const SET_CASES = "SET_CASES";
 const SET_CITY = "SET_CITY";
+const SET_DATE_RANGE = "SET_DATE_RANGE";
 
 const reportsReducer = (state, action) => {
     switch (action.type) {
@@ -36,6 +38,11 @@ const reportsReducer = (state, action) => {
             return {
                 ...state,
                 selectedCity:action.payload
+            }
+        case SET_DATE_RANGE: 
+            return {
+                ...state,
+                dateRange: action.payload
             }
         default:
             return state;
@@ -70,6 +77,10 @@ export const ReportProvider = ({ children }) => {
                 let query = {};
                 if(state.selectedCity && state.selectedCity !== "all"){
                     query.reportLocation = state.selectedCity
+                }
+                if(state.dateRange && state.dateRange.length === 2 && !state.dateRange.includes('')){
+                    query.startDate = state.dateRange[0];
+                    query.endDate = state.dateRange[1];
                 }
                 let response = await fetchAllCases(query);
                 response = response.map((item) => {

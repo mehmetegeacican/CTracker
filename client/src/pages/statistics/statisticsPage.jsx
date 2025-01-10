@@ -1,5 +1,5 @@
 import { Flex, Select, Tabs, DatePicker, Button, Divider } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CaseTable from '../../components/tables/caseTable';
 import { CITIES  as cities} from '../../assets/cities';
 import { useReportsContext } from '../../contexts/store';
@@ -32,10 +32,14 @@ export default function StatisticsPage() {
   };
 
   const handleFilter = () => {
-      dispatch({type:'SET_CITY', payload: selectedCity});
-      dispatch({type:'TRIGGER'});
+    dispatch({type:'SET_CITY', payload: selectedCity});
+    dispatch({type:'SET_DATE_RANGE',payload:dateRange})
+    dispatch({type:'TRIGGER'});
   };
 
+  useEffect(() => {
+    console.log(dateRange);
+  },[dateRange]);
 
   return (
     <div>
