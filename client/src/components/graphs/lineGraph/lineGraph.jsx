@@ -22,5 +22,7 @@ ChartJS.register(
 );
 
 export default function LineGraph({ data, options }) {
+
+
   return <Line data={data} options={options} />;
 }

@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import LineGraph from '../../../../components/graphs/lineGraph/lineGraph'; // Import the LineGraph component
 import { useReportsContext } from '../../../../contexts/store';
+import { groupBy } from '../../functions/statfunctions';
 
 export default function CaseGraph() {
   const [chartData, setChartData] = useState(null);
-  const {state:{cases}} = useReportsContext();
+  const { state: { cases } } = useReportsContext();
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Process data for the graph
-      const labels = cases.map((item) => new Date(item.reportDate).toLocaleDateString());
-      const newCases = cases.map((item) => item.newCaseNumber);
-      const deathCases = cases.map((item) => item.deathCaseNumber);
-      const dischargedCases = cases.map((item) => item.dischargedCaseNumber);
+    const retrieveStats = async () => {
+
+      const groupedData = groupBy(cases, 'reportDate', [
+        'deathCaseNumber',
+        'newCaseNumber',
+        'dischargedCaseNumber',
+      ]);
+
+      // Convert grouped data back to an array if needed
+      const groupedArray = Object.values(groupedData).sort((a,b) => new Date(a.reportDate) - new Date(b.reportDate));
+
+      // Example: Preparing data for the chart
+      const labels = groupedArray.map((item) => new Date(item.reportDate).toLocaleDateString());
+      const newCases = groupedArray.map((item) => item.newCaseNumber);
+      const deathCases = groupedArray.map((item) => item.deathCaseNumber);
+      const dischargedCases = groupedArray.map((item) => item.dischargedCaseNumber);
 
       // Set data for the graph
       setChartData({
@@ -43,11 +54,12 @@ export default function CaseGraph() {
       });
     };
 
-    fetchData();
+    retrieveStats();
   }, [cases]);
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
@@ -62,7 +74,10 @@ export default function CaseGraph() {
   return (
     <div>
       {chartData ? (
-        <LineGraph data={chartData} options={options} />
+        <div style={{ height: '30em', width: '100%' }}>
+          <LineGraph data={chartData} options={options} />
+        </div>
+
       ) : (
         <p>Loading...</p>
       )}
