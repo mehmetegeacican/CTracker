@@ -1,6 +1,8 @@
 import { Table } from 'antd';
 import React from 'react'
 import { useReportsContext } from '../../../contexts/store';
+import ViewReportButton from '../../buttons/viewReportButton';
+
 
 export default function CaseTable() {
     const COLUMNS = [
@@ -51,8 +53,9 @@ export default function CaseTable() {
         },
         {
             title: "Report",
-            dataIndex: 'reportId',
-            key: 'reportId',
+            dataIndex: 'mainReport',
+            key: 'mainReport',
+            render: (text, record) => <ViewReportButton report={text} />,
         }
         /*
         {
