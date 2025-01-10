@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import CaseTable from '../../components/tables/caseTable';
 import { CITIES  as cities} from '../../assets/cities';
 import { useReportsContext } from '../../contexts/store';
+import CaseGraph from './components/caseGraph/caseGraph';
 
 export default function StatisticsPage() {
   const tabItems = [
     {
       key: '1',
       label: 'Graph View',
-      children: <div>Graph View</div>,
+      children: <CaseGraph/>,
     },
     {
       key: '2',
