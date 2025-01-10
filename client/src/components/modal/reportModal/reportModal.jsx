@@ -2,14 +2,12 @@ import { message, Modal } from 'antd'
 import React, { useState } from 'react'
 import ReportForm from '../../form/reportForm/reportForm';
 import { createNewReport } from '../../../api/reportApi';
-import { useReportsContext } from '../../../contexts/reportContext';
-import { useCasesContext } from '../../../contexts/caseContext';
+import { useReportsContext } from '../../../contexts/store';
 
 export default function ReportModal({ open, successFunction, cancelFunction, confirmLoading }) {
 
     const [report, setReport] = useState("");
     const {dispatch} = useReportsContext();
-    const {caseDispatch} = useCasesContext(); 
 
     const handleOk = async () => {
         
@@ -22,9 +20,6 @@ export default function ReportModal({ open, successFunction, cancelFunction, con
         else{
             dispatch({
                 type:'TRIGGER'
-            })
-            caseDispatch({
-                type:'TRIGGER_CASES'
             })
             successFunction();
         }

@@ -1,14 +1,17 @@
 // ReportContext.jsx
 import React, { createContext, useReducer, useContext, useEffect } from 'react';
 import { fetchAllReports } from '../api/reportApi';
+import { fetchAllCases } from '../api/casesApi';
 
 const initialState = {
     reports: [],
+    cases: [],
     trigger: 0
 };
 
 const SET_REPORTS = 'SET_REPORTS';
 const TRIGGER = 'TRIGGER'
+const SET_CASES = "SET_CASES";
 
 const reportsReducer = (state, action) => {
     switch (action.type) {
@@ -16,6 +19,11 @@ const reportsReducer = (state, action) => {
             return {
                 ...state,
                 reports: action.payload,
+            };
+        case SET_CASES:
+            return {
+                ...state,
+                cases: action.payload
             };
         case TRIGGER:
             return {
@@ -50,7 +58,25 @@ export const ReportProvider = ({ children }) => {
                 console.error('Error fetching reports:', error);
             }
         };
+        const fetchCases = async () => {
+            try {
+                let response = await fetchAllCases();
+                response = response.map((item) => {
+                    return {
+                        key: item.id,
+                        ...item
+                    }
+                }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                dispatch({
+                    type: 'SET_CASES',
+                    payload: response,
+                });
+            } catch (error) {
+                console.error('Error fetching reports:', error);
+            }
+        };
         fetchReports();
+        fetchCases();
     }, [state.trigger]);
 
     return (
