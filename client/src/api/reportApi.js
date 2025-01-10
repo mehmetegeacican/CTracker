@@ -15,6 +15,21 @@ export const fetchAllReports = async () => {
 };
 
 /**
+ * Fetch By Id
+ * @param {*string} reportId 
+ * @returns 
+ */
+export const fetchReportById = async (reportId) => {
+    try{
+        const res = await axios.get(`http://localhost:8080/api/v1/reports/${reportId}`);
+        return res.data;
+    } catch(e){
+        console.error(e);
+        return [];
+    }
+};
+
+/**
  * Create New Report
  * @param {*Object} requestObj 
  * @returns 

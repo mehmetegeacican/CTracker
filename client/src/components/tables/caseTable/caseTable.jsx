@@ -53,9 +53,9 @@ export default function CaseTable() {
         },
         {
             title: "Report",
-            dataIndex: 'mainReport',
-            key: 'mainReport',
-            render: (text, record) => <ViewReportButton report={text} />,
+            dataIndex: 'reportId',
+            key: 'reportId',
+            render: (text, record) => <ViewReportButton reportId={text} />,
         }
         /*
         {

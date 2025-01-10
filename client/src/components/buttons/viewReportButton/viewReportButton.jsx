@@ -1,8 +1,18 @@
-import { Button, Modal } from "antd";
-import { useState } from "react";
+import { Button, Modal, Spin } from "antd";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { fetchReportById } from "../../../api/reportApi";
 
-export default function ViewReportButton({ report }){
+const LoadingSpinner = () => <Spin tip="Loading..." size="large" />;
+
+export default function ViewReportButton({ reportId }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [report, setReport] = useState("");
+
+
+    const fetchReport = useCallback(async () => {
+        const result = await fetchReportById(reportId);
+        setReport(result.report);
+    }, [reportId]);
 
     const handleOpenModal = () => {
         setIsModalVisible(true);
@@ -11,6 +21,23 @@ export default function ViewReportButton({ report }){
     const handleCloseModal = () => {
         setIsModalVisible(false);
     };
+
+    useEffect(() => {
+        if (isModalVisible) {
+            fetchReport();
+        }
+    }, [isModalVisible]);
+
+    const ReportDetail = ({report}) => {
+        if(!report || report === ""){
+            throw new Promise(() => {});
+        }
+        else {
+            return (
+                <p>{report}</p>
+            )
+        }
+    }
 
     return (
         <>
@@ -28,7 +55,10 @@ export default function ViewReportButton({ report }){
                     </Button>,
                 ]}
             >
-                <p>{report}</p>
+                <Suspense fallback={<LoadingSpinner />}>
+                    <ReportDetail report={report}/>
+                </Suspense>
+
             </Modal>
         </>
     );
