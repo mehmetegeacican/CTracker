@@ -1,4 +1,4 @@
-import { Flex, Select, Tabs, DatePicker, Button } from 'antd'
+import { Flex, Select, Tabs, DatePicker, Button, Divider } from 'antd'
 import React, { useState } from 'react'
 import CaseTable from '../../components/tables/caseTable';
 import { CITIES  as cities} from '../../assets/cities';
@@ -33,8 +33,9 @@ export default function StatisticsPage() {
   return (
     <div>
       <h1>Statistics Section</h1>
+      <Divider/>
       <Flex vertical gap={10}>
-        <div>Filter the Datas based on the requirements</div>
+        
         <Flex justify='flex-end' gap={20}>
           <Select
             placeholder="Select a city"
