@@ -14,6 +14,7 @@ import java.util.Date;
 public class CaseDto {
     private String id;
     private String reportLocation;
+    private String mainReport;
     private Date reportDate;
     private int newCaseNumber;
     private int dischargedCaseNumber;

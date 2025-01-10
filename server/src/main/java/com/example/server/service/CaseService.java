@@ -53,9 +53,10 @@ public class CaseService {
         return (startDate != null && endDate != null);
     }
 
-    public void addCase(String locationName,Date date,int newCase,int deathCase,int dischargedCase){
+    public void addCase(String locationName,String report,Date date,int newCase,int deathCase,int dischargedCase){
         Case newCaseEntity = new Case();
         newCaseEntity.setReportLocation(locationName);
+        newCaseEntity.setMainReport(report);
         newCaseEntity.setReportDate(date);
         newCaseEntity.setNewCaseNumber(newCase);
         newCaseEntity.setDeathCaseNumber(deathCase);

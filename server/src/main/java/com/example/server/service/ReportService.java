@@ -16,7 +16,7 @@ public class ReportService {
     }
 
     /**
-     * Returns All of the Reports
+     * Returns Reports
      * @return
      */
     public List<Report> getAllReports(){

@@ -25,6 +25,7 @@ public class CaseDtoConverter {
                 .dischargedCaseNumber(caseParam.getDischargedCaseNumber())
                 .deathCaseNumber(caseParam.getDeathCaseNumber())
                 .reportDate(caseParam.getReportDate())
+                .mainReport(caseParam.getMainReport())
                 .build();
     }
 

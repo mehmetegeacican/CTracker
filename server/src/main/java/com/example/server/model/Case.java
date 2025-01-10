@@ -13,8 +13,7 @@ import java.util.Date;
 public class Case {
     @Id
     private String id;
-
-    private String reportId;
+    private String mainReport;
     private Date reportDate;
     private String reportLocation;
     private int newCaseNumber;
@@ -45,22 +44,6 @@ public class Case {
 
     /**
      * Get
-     * @return reportId string
-     */
-    public String getReportId() {
-        return reportId;
-    }
-
-    /**
-     * Setter
-     * @param reportId
-     */
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
-    }
-
-    /**
-     * Get
      * @return reportDate date
      */
     public Date getReportDate() {
@@ -74,6 +57,23 @@ public class Case {
     public void setReportDate(Date reportDate) {
         this.reportDate = reportDate;
     }
+
+    /**
+     * Getters for Main Report
+     * @return
+     */
+    public String getMainReport() {
+        return mainReport;
+    }
+
+    /**
+     * Setter for Main Report
+     * @param mainReport
+     */
+    public void setMainReport(String mainReport) {
+        this.mainReport = mainReport;
+    }
+
 
     /**
      * Get
