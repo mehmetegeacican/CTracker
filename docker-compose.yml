@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Backend service (Spring Boot)
+  server:
+    build:
+      context: ./server
+    container_name: server
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://root:example@mongo:27017/coronacases?authSource=admin
+      - SPRING_DATA_MONGODB_DATABASE=coronacases
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # Frontend service (Vite)
+  client:
+    build:
+      context: ./client
+    container_name: client
+    ports:
+      - "3000:5173"
+    environment:
+      - VITE_API_REPORT_URL = http://server:8080/api/v1/reports
+      - VITE_API_CASE_URL = http://server:8080/api/v1/cases
+    depends_on:
+      - server
+    networks:
+      - app-network
+    command: sh -c "npm install && npm run dev"
+
+  # MongoDB service
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=coronacases  # Ensures that the 'coronacases' database is created
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    volumes:
+      - mongo_data:/data/db  # Persist MongoDB data
+    networks:
+      - app-network
+
+# Define a network for all services to communicate with each other
+networks:
+  app-network:
+    driver: bridge
+
+# Volumes for persistent MongoDB data
+volumes:
+  mongo_data:
