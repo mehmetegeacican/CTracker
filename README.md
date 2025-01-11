@@ -52,7 +52,6 @@ Make sure you have the following installed:
 
 ### Steps 
 
-```
 1. Clone the repository:
     ```bash
     git clone <repository-url>
@@ -73,7 +72,6 @@ Make sure you have the following installed:
     - Frontend: `http://localhost:5173`
     - Backend API: `http://localhost:8080`
 
-```
 
 ### Environment Variables
 
