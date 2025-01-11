@@ -51,7 +51,7 @@ public class CaseService {
     }
 
     public boolean areDateParametersValid(Date startDate,Date endDate){
-        return (startDate != null && endDate != null && startDate.before(endDate));
+        return (startDate != null && endDate != null && (startDate.before(endDate) || startDate.equals(endDate)));
     }
 
     public void addCase(String locationName,String reportId,Date date,int newCase,int deathCase,int dischargedCase){
