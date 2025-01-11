@@ -84,7 +84,6 @@ public class CaseService {
 
         // Step 4 -- Save
         caseRepository.save(existingCase);
-
     }
 
 

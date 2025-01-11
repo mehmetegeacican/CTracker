@@ -1,6 +1,7 @@
 package com.example.server.service;
 
 import com.example.server.model.Case;
+import com.example.server.repository.CaseRepository;
 import com.example.server.repository.ReportRepository;
 import com.mongodb.client.result.DeleteResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +22,9 @@ class CaseServiceTest {
 
     @Mock
     private ReportRepository reportRepository;
+
+    @Mock
+    private CaseRepository caseRepository;
     @Mock
     private MongoTemplate mongoTemplate;
 
@@ -135,6 +140,42 @@ class CaseServiceTest {
         assertEquals(newCase, capturedCase.getNewCaseNumber());
         assertEquals(deathCase, capturedCase.getDeathCaseNumber());
         assertEquals(dischargedCase, capturedCase.getDischargedCaseNumber());
+    }
+
+
+    @Test
+    void testUpdateCaseSuccess() {
+        // Given
+        String reportId = "testReportId";
+        Case existingCase = new Case();
+        existingCase.setReportId(reportId);
+
+        Mockito.when(caseRepository.findByReportId(reportId)).thenReturn(Optional.of(existingCase));
+
+        // When
+        caseService.updateCase("Istanbul", reportId, new Date(), 10, 2, 5);
+
+        // Then
+        assertEquals("Istanbul", existingCase.getReportLocation());
+        assertEquals(10, existingCase.getNewCaseNumber());
+        assertEquals(2, existingCase.getDeathCaseNumber());
+        assertEquals(5, existingCase.getDischargedCaseNumber());
+        Mockito.verify(caseRepository).save(existingCase);
+    }
+
+
+    @Test
+    void testUpdateCaseNotFound() {
+        // Given
+        String reportId = "nonExistentReportId";
+        Mockito.when(caseRepository.findByReportId(reportId)).thenReturn(Optional.empty());
+        // When
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            caseService.updateCase("Istanbul", reportId, new Date(), 20, 5, 10);
+        });
+        // Then
+        assertEquals("Case with Report ID " + reportId + " not found", exception.getMessage());
+        Mockito.verify(caseRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test

@@ -121,6 +121,46 @@ class ReportServiceTest {
         Mockito.verify(reportRepository, Mockito.times(1)).save(inputReport);
     }
 
+
+    @Test
+    void testUpdateReportSuccess(){
+        // Given
+        String reportId = "existingReportId";
+        Report existingReport = new Report();
+        existingReport.setId(reportId);
+        existingReport.setReport("Old Report Content");
+        Report updatedReport = new Report();
+        updatedReport.setReport("New Report Content");
+        // Mock
+        Mockito.when(reportRepository.findById(reportId)).thenReturn(Optional.of(existingReport));
+        Mockito.when(reportRepository.save(Mockito.any(Report.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        // When
+        Report result = reportService.updateReport(reportId, updatedReport);
+        // Then
+        assertNotNull(result);
+        assertEquals("New Report Content", result.getReport());
+        Mockito.verify(reportRepository).findById(reportId);
+        Mockito.verify(reportRepository).save(existingReport);
+    }
+
+
+    @Test
+    void testUpdateReportReportNotFound(){
+        // Given
+        String reportId = "nonExistentReportId";
+        Report updatedReport = new Report();
+        updatedReport.setReport("Updated Report Content");
+        Mockito.when(reportRepository.findById(reportId)).thenReturn(Optional.empty());
+        // When
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            reportService.updateReport(reportId, updatedReport);
+        });
+        // Then
+        assertEquals("Report does not exist!", exception.getMessage());
+        Mockito.verify(reportRepository).findById(reportId);
+        Mockito.verify(reportRepository, Mockito.never()).save(Mockito.any());
+    }
+
     @Test
     void testDeleteReportSuccessfulCase() {
         // Given
