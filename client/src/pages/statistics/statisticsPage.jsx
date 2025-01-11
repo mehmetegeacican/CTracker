@@ -20,12 +20,14 @@ export default function StatisticsPage() {
   ];
   const { RangePicker } = DatePicker;
 
-  const [selectedCity, setSelectedCity] = useState("all");
+
+  
   const [dateRange, setDateRange] = useState([]);
-  const {dispatch} = useReportsContext();
+  const {state:{selectedCity},dispatch} = useReportsContext();
+  const [city, setCity] = useState(selectedCity || "all");
 
   const handleCityChange = (value) => {
-    setSelectedCity(value);
+    setCity(value);
   };
 
   const handleDateChange = (dates, dateStrings) => {
@@ -33,14 +35,10 @@ export default function StatisticsPage() {
   };
 
   const handleFilter = () => {
-    dispatch({type:'SET_CITY', payload: selectedCity});
+    dispatch({type:'SET_CITY', payload: city});
     dispatch({type:'SET_DATE_RANGE',payload:dateRange})
     dispatch({type:'TRIGGER'});
   };
-
-  useEffect(() => {
-    console.log(dateRange);
-  },[dateRange]);
 
   return (
     <div>
@@ -54,7 +52,7 @@ export default function StatisticsPage() {
             onChange={handleCityChange}
             style={{ width: '30%' }}
             allowClear
-            defaultValue={'all'}
+            defaultValue={selectedCity}
           >
             {cities.map((city,index) => {
               return(
