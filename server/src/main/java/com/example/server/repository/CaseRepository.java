@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface CaseRepository extends MongoRepository<Case,String> {
     List<Case> findByReportLocationAndReportDateBetween(String reportLocation, Date startDate, Date endDate);
@@ -15,4 +16,5 @@ public interface CaseRepository extends MongoRepository<Case,String> {
 
     List<Case> findByReportDateBetween(Date startDate, Date endDate);
 
+    Optional<Case> findByReportId(String reportId);
 }

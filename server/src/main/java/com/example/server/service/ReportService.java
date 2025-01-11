@@ -42,6 +42,24 @@ public class ReportService {
         return  reportRepository.save(report);
     }
 
+
+    public Report updateReport(String id,Report report){
+        // Step 1 -- Find the existing report by ID
+        Optional<Report> existingReportOpt = reportRepository.findById(id);
+
+        if (!existingReportOpt.isPresent()) {
+            throw new RuntimeException("Report does not exist!");
+        }
+
+        Report existingReport = existingReportOpt.get();
+
+        // Step 2 -- Update fields in the existing report
+        existingReport.setReport(report.getReport());
+
+        // Step 3 -- Save the updated report back to the database
+        return reportRepository.save(existingReport);
+    }
+
     /**
      * Deletes a Report Based on Id
      * @param reportId

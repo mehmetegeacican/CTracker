@@ -67,6 +67,27 @@ public class CaseService {
     }
 
 
+    public void updateCase(String locationName,String reportId,Date date,int newCase,int deathCase,int dischargedCase){
+        // Step 1 -- Find the existing case by Report ID
+        Optional<Case> existingCaseOpt = caseRepository.findByReportId(reportId);
+        // Step 2 -- If the existing case wasn't found
+        if (!existingCaseOpt.isPresent()) {
+            throw new RuntimeException("Case with Report ID " + reportId + " not found");
+        }
+        Case existingCase = existingCaseOpt.get();
+        // Step 3 -- Update the Case
+        existingCase.setReportLocation(locationName);
+        existingCase.setReportDate(date);
+        existingCase.setNewCaseNumber(newCase);
+        existingCase.setDeathCaseNumber(deathCase);
+        existingCase.setDischargedCaseNumber(dischargedCase);
+
+        // Step 4 -- Save
+        caseRepository.save(existingCase);
+
+    }
+
+
     public void deleteCase(String reportId){
         Query query = new Query(Criteria.where("reportId").is(reportId));
         DeleteResult result = mongoTemplate.remove(query, Case.class);

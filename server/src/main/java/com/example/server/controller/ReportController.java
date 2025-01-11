@@ -76,7 +76,6 @@ public class ReportController {
         }
     }
 
-
     @PostMapping
     public ResponseEntity<Map<String,Object>> postNewReport(@RequestBody ReportRequest reportRequest){
         Map<String, Object> responseBody = new HashMap<>();
@@ -113,6 +112,54 @@ public class ReportController {
         } catch (Exception error){
             responseBody.put("message", "Error deleting report " + error);
             return ResponseEntity.status(500).body(responseBody);
+        }
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,Object>> updateExistingReport(@PathVariable String id,@RequestBody ReportRequest reportRequest){
+        Map<String, Object> responseBody = new HashMap<>();
+        try{
+            // Step 1 -- Check if report exists
+            Optional<Report> existingReportOpt = reportService.getReportById(id);
+            if (!existingReportOpt.isPresent()) {
+                responseBody.put("message", "Report not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+            }
+            Report existingReport = existingReportOpt.get();
+            // Step 2 -- Convert and Validate New Report Content
+            Report updatedReportEntity = reportRequestConverter.convertToEntity(reportRequest);
+            String updatedReportText = updatedReportEntity.getReport();
+            // Step 3 -- Check the Updated Report if it is present
+            if (updatedReportText == null || updatedReportText.isEmpty()) {
+                responseBody.put("message", "Report section cannot be empty");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            }
+            // Step 4 -- Check if the provided Report is Valid
+            if (!ReportHelper.isValidReport(updatedReportText)) {
+                responseBody.put("message", "Report content is invalid. Must include City, Date, Death, Discharged and New Case information.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            }
+            // Step 5 -- Extract the Datas from the report if all checks are passed
+            String dateStr = ReportHelper.extractDate(updatedReportText);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC-3"));
+            Date date = sdf.parse(dateStr);
+            String city = ReportHelper.extractCity(updatedReportText);
+            String retractedReport = ReportHelper.removeDateFromReport(updatedReportText);
+            Map<String, Integer> numberMap = ReportHelper.extractNumbers(retractedReport);
+            existingReport.setReport(updatedReportText);
+            Report updatedReport = reportService.updateReport(id,existingReport);
+            // Step 6 -- Update the Case
+            caseService.updateCase(city, updatedReport.getId(), date, numberMap.get("newCases"), numberMap.get("deathCases"), numberMap.get("dischargedCases"));
+            // Step 7 -- Return
+            responseBody.put("message", "Report updated successfully");
+            responseBody.put("report", updatedReport);
+            return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+
+        } catch (Exception error){
+            responseBody.put("message", "Error updating report: " + error.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
     }
 
