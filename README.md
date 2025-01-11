@@ -75,6 +75,6 @@ Make sure you have the following installed:
 
 ### Environment Variables
 
-You can reach the env variables from the docker-compose, while this is not a best practice
-For testing purposes, they were initially left visible. 
+You can reach the env variables from the docker-compose. 
+While leaving variables exposed is not a best practice, for this scenario they were initially left visible. 
 The variables will later be changed and will be kept as secret variables later
