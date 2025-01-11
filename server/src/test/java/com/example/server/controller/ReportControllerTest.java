@@ -217,6 +217,108 @@ class ReportControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error deleting report java.lang.RuntimeException: Database Error"));
     }
 
+
+    @Test
+    void testUpdateExistingReportSuccess() throws Exception {
+        // Given
+        String reportId = "existingReportId";
+        ReportRequest reportRequest = new ReportRequest();
+        reportRequest.setReport("Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5");
+
+        Report existingReport = new Report();
+        existingReport.setId(reportId);
+        existingReport.setReport("Old Report Content");
+
+        Report updatedReport = new Report();
+        updatedReport.setId(reportId);
+        updatedReport.setReport(reportRequest.getReport());
+
+        Mockito.when(reportService.getReportById(reportId)).thenReturn(Optional.of(existingReport));
+        Mockito.when(reportRequestConverter.convertToEntity(reportRequest)).thenReturn(updatedReport);
+        Mockito.when(reportService.updateReport(Mockito.eq(reportId), Mockito.any(Report.class))).thenReturn(updatedReport);
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reports/{id}", reportId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"report\":\"Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Report updated successfully"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.report.report").value(reportRequest.getReport()));
+
+    }
+
+
+    @Test
+    void testUpdateExistingReportReportNotFound() throws Exception {
+        // Given
+        String reportId = "nonExistingReportId";
+        Mockito.when(reportService.getReportById(reportId)).thenReturn(Optional.empty());
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reports/{id}", reportId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"report\":\"Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5\"}"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Report not found"));
+    }
+
+
+    @Test
+    void testUpdateExistingReportEmptyReport() throws  Exception {
+        // Given
+        String report = "";
+        ReportRequest mockRequest = new ReportRequest(report);
+        Report mockReport = new Report();
+        mockReport.setId("12345");
+        mockReport.setReport(mockRequest.getReport());
+
+        Mockito.when(reportService.getReportById("12345")).thenReturn(Optional.of(mockReport));
+        Mockito.when(reportRequestConverter.convertToEntity(mockRequest)).thenReturn(mockReport);
+
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reports/{id}", "12345")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"report\":\"\"}"))  // Ensure the content is empty
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Report section cannot be empty"));
+    }
+
+    @Test
+    void testUpdateExistingReportInvalidContent() throws Exception {
+        String reportId = "existingReportId";
+        ReportRequest reportRequest = new ReportRequest();
+        reportRequest.setReport("Invalid Content");
+
+        Report existingReport = new Report();
+        existingReport.setId(reportId);
+        existingReport.setReport("Old Content");
+
+        Mockito.when(reportService.getReportById(reportId)).thenReturn(Optional.of(existingReport));
+        Mockito.when(reportRequestConverter.convertToEntity(reportRequest)).thenReturn(existingReport);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reports/{id}", reportId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"report\":\"Invalid Content\"}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Report content is invalid. Must include City, Date, Death, Discharged and New Case information."));
+    }
+
+
+    @Test
+    void testUpdateExistingReportInternalServerError() throws Exception {
+        // Given
+        String reportId = "existingReportId";
+        ReportRequest reportRequest = new ReportRequest();
+        reportRequest.setReport("Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5");
+        Mockito.when(reportService.getReportById(reportId)).thenThrow(new RuntimeException("Database error"));
+
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reports/{id}", reportId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"report\":\"Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5\"}"))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error updating report: Database error"));
+    }
+
+
     @Test
     void testDeleteReportSuccess() throws Exception {
         // Given
