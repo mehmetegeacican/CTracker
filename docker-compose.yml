@@ -22,7 +22,7 @@ services:
       context: ./client
     container_name: client
     ports:
-      - "3000:5173"
+      - "5173:5173"
     environment:
       - VITE_API_REPORT_URL = http://server:8080/api/v1/reports
       - VITE_API_CASE_URL = http://server:8080/api/v1/cases
@@ -30,7 +30,7 @@ services:
       - server
     networks:
       - app-network
-    command: sh -c "npm install && npm run dev"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
 
   # MongoDB service
   mongo:
