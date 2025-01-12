@@ -1,6 +1,6 @@
 export const CITIES = [
     "All",
-    "Istanbul",
+    "İstanbul",
     "Ankara",
-    "Izmir",
+    "İzmir",
 ]

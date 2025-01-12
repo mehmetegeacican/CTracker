@@ -56,7 +56,7 @@ export default function StatisticsPage() {
           >
             {cities.map((city,index) => {
               return(
-                <Option key={index} value={city.toLowerCase()}>{city}</Option>
+                <Option key={index} value={city.toLocaleLowerCase('tr')}>{city}</Option>
               )
             })}
             
