@@ -29,13 +29,18 @@ export default function ReportTable() {
           //sorter: (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         },
         */
-        /*
+        
         {
           title: 'Edit',
-          dataIndex: 'edit',
-          key: 'edit',
+            dataIndex: 'id',
+            key: 'id',
+            render: (id) => (
+                <Button type="primary" onClick={() => console.log(id)}>
+                    Edit
+                </Button>
+            ),
         },
-        */
+        
         {
             title: 'Delete',
             dataIndex: 'id',

@@ -47,6 +47,23 @@ export const createNewReport = async (requestObj) => {
 };
 
 /**
+ * Updates an Existing Report
+ * @param {*string} id 
+ * @param {*Object} requestObj 
+ */
+export const updateExistingReport = async (id,requestObj) => {
+    try{
+        const res = await axios.put(`${reportUrl}/${id}`,requestObj);
+        return res.data;
+    } catch(e){
+        console.error(e);
+        return {
+            message:"Could not create the report " + e.message
+        };
+    }
+};
+
+/**
  * Delete Reports
  * @param {*} reportId 
  * @returns 
