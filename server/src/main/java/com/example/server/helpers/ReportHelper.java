@@ -2,6 +2,7 @@ package com.example.server.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,16 +18,17 @@ public class ReportHelper {
     };
 
     public static boolean isValidReport(String report) {
+        Locale turkishLocale = Locale.forLanguageTag("tr");
         boolean dateExists =  report.matches(".*" + DATE_REGEX + ".*");
         boolean keywordsExists = true;
         boolean cityExists = false;
         for (String keyword : REQUIRED_KEYWORDS) {
-            if (!report.toLowerCase().contains(keyword)) {
+            if (!report.toLowerCase(turkishLocale).contains(keyword.toLowerCase(turkishLocale))) {
                 keywordsExists = false;
             }
         }
         for(String city: CITIES){
-            if(report.toLowerCase().contains(city)){
+            if(report.toLowerCase(turkishLocale).contains(city.toLowerCase(turkishLocale))){
                 cityExists = true;
             }
         }
@@ -46,9 +48,10 @@ public class ReportHelper {
     }
 
     public static String extractCity(String report) {
+        Locale turkishLocale = Locale.forLanguageTag("tr");
         String cityExtracted = "";
         for(String city: CITIES){
-            if(report.toLowerCase().contains(city)){
+            if(report.toLowerCase(turkishLocale).contains(city.toLowerCase(turkishLocale))){
                 cityExtracted =  city;
             }
         }
