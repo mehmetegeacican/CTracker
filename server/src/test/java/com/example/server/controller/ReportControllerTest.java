@@ -223,7 +223,7 @@ class ReportControllerTest {
         // Given
         String reportId = "existingReportId";
         ReportRequest reportRequest = new ReportRequest();
-        reportRequest.setReport("Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5");
+        reportRequest.setReport("Sehir: İstanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5");
 
         Report existingReport = new Report();
         existingReport.setId(reportId);
@@ -239,7 +239,7 @@ class ReportControllerTest {
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reports/{id}", reportId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"report\":\"Sehir: Istanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5\"}"))
+                        .content("{\"report\":\"Sehir: İstanbul, Date: 01.01.2025, Yeni Vaka: 10, Vefat: 2, Taburcu: 5\"}"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Report updated successfully"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.report.report").value(reportRequest.getReport()));
