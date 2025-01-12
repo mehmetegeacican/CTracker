@@ -1,7 +1,7 @@
 import { Button, Divider, Flex } from 'antd'
 import React, { useState } from 'react'
 import ReportTable from '../../components/tables/reportTable/reportTable';
-import ReportModal from '../../components/modal/reportModal';
+import CreateReportModal from '../../components/modal/createReportModal';
 
 export default function ReportsPage() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -25,7 +25,7 @@ export default function ReportsPage() {
         <ReportTable />
       </Flex>
       {/*Report Modal */}
-      <ReportModal
+      <CreateReportModal
         open={openCreateForm}
         successFunction={() => handleSubmit()}
         cancelFunction={() => setOpenCreateForm(false)}

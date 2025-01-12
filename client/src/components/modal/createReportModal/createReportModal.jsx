@@ -4,7 +4,7 @@ import ReportForm from '../../form/reportForm/reportForm';
 import { createNewReport } from '../../../api/reportApi';
 import { useReportsContext } from '../../../contexts/store';
 
-export default function ReportModal({ open, successFunction, cancelFunction, confirmLoading }) {
+export default function CreateReportModal({ open, successFunction, cancelFunction, confirmLoading }) {
 
     const [report, setReport] = useState("");
     const {dispatch} = useReportsContext();

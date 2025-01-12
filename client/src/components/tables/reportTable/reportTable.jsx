@@ -2,10 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, message, Table } from 'antd';
 import { deleteExistingReport, fetchAllReports } from '../../../api/reportApi';
 import { useReportsContext } from '../../../contexts/store';
+import EditReportModal from '../../modal/editReportModal/editReportModal';
 
 
 
 export default function ReportTable() {
+    const [openEditModal,setOpenEditModal] = useState(false);
+    const [selectedReportId,setSelectedReportId] = useState("");
+
     const COLUMNS = [
         /*
           {
@@ -35,12 +39,11 @@ export default function ReportTable() {
             dataIndex: 'id',
             key: 'id',
             render: (id) => (
-                <Button type="primary" onClick={() => console.log(id)}>
+                <Button type="primary" onClick={() => setOpenEditModal(true)}>
                     Edit
                 </Button>
             ),
         },
-        
         {
             title: 'Delete',
             dataIndex: 'id',
@@ -64,6 +67,15 @@ export default function ReportTable() {
 
 
     return (
-        <Table columns={COLUMNS} dataSource={reports}/>
+        <div>
+          <Table columns={COLUMNS} dataSource={reports}/>
+          <EditReportModal
+            open={openEditModal}
+            successFunction={() => console.log("Success")}
+            cancelFunction={() => setOpenEditModal(false)}
+            reportId={selectedReportId}
+
+          />
+        </div>
     )
 }
