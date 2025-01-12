@@ -39,10 +39,18 @@ export const createNewReport = async (requestObj) => {
         const res = await axios.post(`${reportUrl}`,requestObj);
         return res.data;
     } catch(e){
-        console.error(e);
-        return {
-            message:"Could not create the report " + e.message
-        };
+        if (e.response) {
+            if (e.response.status === 400) {
+                return {
+                    status : 400,
+                    message: e.response.data.message || "Could not add new report",
+                };
+            }
+        } else {
+            return {
+                message: "Could not create the report: " + e.message,
+            };
+        }
     }
 };
 
@@ -56,10 +64,18 @@ export const updateExistingReport = async (id,requestObj) => {
         const res = await axios.put(`${reportUrl}/${id}`,requestObj);
         return res.data;
     } catch(e){
-        console.error(e);
-        return {
-            message:"Could not create the report " + e.message
-        };
+        if (e.response) {
+            if (e.response.status === 400) {
+                return {
+                    status : 400,
+                    message: e.response.data.message || "Could not add new report",
+                };
+            }
+        } else {
+            return {
+                message: "Could not create the report: " + e.message,
+            };
+        }
     }
 };
 

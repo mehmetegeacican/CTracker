@@ -13,8 +13,8 @@ export default function EditReportModal({ open, successFunction, cancelFunction,
     const res = await updateExistingReport(reportId,{
       report: report
     });
-    if (res.message === "Could not create the report Request failed with status code 400") {
-      message.error("Could not add the report")
+    if (res.status === 400 && res.status) {
+      message.error(res.message + "\n  Please make sure the report follows turkish language format.")
     }
     else {
       dispatch({
