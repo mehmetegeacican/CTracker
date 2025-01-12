@@ -39,7 +39,7 @@ export default function CreateReportModal({ open, successFunction, cancelFunctio
             width={800}
             style={{overflowY:'auto', height:'30em'}}
         >
-            <ReportForm setReport={setReport}/>
+            <ReportForm setReport={setReport} report={report}/>
         </Modal>
     )
 }
