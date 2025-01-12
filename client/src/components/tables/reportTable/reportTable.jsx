@@ -76,19 +76,12 @@ export default function ReportTable() {
   ];
   const { state: { reports }, dispatch } = useReportsContext();
 
-
-
-  const handleDelete = async (id) => {
-
-  }
-
-
   return (
     <div>
       <Table columns={COLUMNS} dataSource={reports} />
       <EditReportModal
         open={openEditModal}
-        successFunction={() => console.log("Success")}
+        successFunction={handleSubmit}
         cancelFunction={() => setOpenEditModal(false)}
         reportId={selectedReportId}
       />
@@ -97,7 +90,6 @@ export default function ReportTable() {
         successFunction={handleSubmit}
         cancelFunction={() => setOpenDeleteModal(false)}
         reportId={selectedReportId}
-
       />
     </div>
   )
